@@ -11,6 +11,13 @@ abstract class TestCase extends BaseTestCase
 {
     use WithFaker;
 
+    /**
+     * Indicates whether the default seeder should run before each test.
+     *
+     * @var bool
+     */
+    protected $seed = true;
+
     protected function login(): User
     {
         $user = User::factory()->create();
@@ -36,5 +43,13 @@ abstract class TestCase extends BaseTestCase
         $this->assertTrue($date->lte(now()->addSeconds($seconds)));
 
         return $user;
+    }
+
+    protected function getPayload(): array
+    {
+        return [
+            'amount' => $this->faker->numberBetween(1,101),
+            'currency' => 'EUR'
+        ];
     }
 }

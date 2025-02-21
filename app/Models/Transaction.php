@@ -5,7 +5,7 @@ namespace App\Models;
 use App\Enum\TransactionType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Enum\TransactionStatus;
 
 /**
@@ -29,14 +29,31 @@ class Transaction extends Model
 {
     use HasFactory;
 
-    public function user(): HasOne
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var list<string>
+     */
+    protected $fillable = [
+        'uuid',
+        'amount',
+        'currency',
+        'type',
+        'status',
+        'parent_id',
+        'external_id',
+        'user_id',
+        'payment_provider_id',
+    ];
+
+    public function user(): BelongsTo
     {
-        return $this->hasOne(User::class);
+        return $this->belongsTo(User::class);
     }
 
-    public function provider(): HasOne
+    public function provider(): BelongsTo
     {
-        return $this->hasOne(PaymentProvider::class);
+        return $this->belongsTo(PaymentProvider::class, 'payment_provider_id', 'id');
     }
 
     /**

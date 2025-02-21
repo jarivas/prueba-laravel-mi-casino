@@ -14,13 +14,13 @@ class Login extends Controller
         $user = User::where('email', $request->email)->first();
 
         if (!$user) {
-            return response()->json(['error' => 'user_not_found'], 404);
+            return response()->json(['message' => 'Not Found.'], 404);
         }
 
         $credentials = $request->only(['email', 'password']);
 
         if (!Auth::attempt($credentials, false)) {
-            return response()->json(['error' => 'invalid_credentials'], 400);
+            return response()->json(['message' => 'Unauthorized.'], 400);
         }
 
         $user->tokens()->delete();

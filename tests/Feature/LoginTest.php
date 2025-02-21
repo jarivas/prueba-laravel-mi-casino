@@ -20,7 +20,7 @@ class LoginTest extends TestCase
 
         $response->assertStatus(404)
             ->assertJson(fn (AssertableJson $json) =>
-                $json->where('error', 'user_not_found'));
+                $json->where('message', 'Not Found.'));
     }
 
     public function test_login_wrong_password(): void
@@ -35,7 +35,7 @@ class LoginTest extends TestCase
         $response = $this->postJson('/api/login', $data);
         $response->assertStatus(400)
         ->assertJson(fn (AssertableJson $json) =>
-            $json->where('error', 'invalid_credentials'));
+            $json->where('message', 'Unauthorized.'));
 
     }
 

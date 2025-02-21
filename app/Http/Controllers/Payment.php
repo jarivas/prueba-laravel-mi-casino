@@ -23,7 +23,7 @@ class Payment extends Controller
 
         $this->transaction = Transaction::factory()->create(
             [
-                'provider_id' => $provider->id,
+                'payment_provider_id' => $provider->id,
                 'user_id' => $request->user()->id,
                 'amount' => $request->integer('amount'),
                 'currency' => $request->string('currency')
@@ -31,13 +31,15 @@ class Payment extends Controller
         );
 
         // @phpstan-ignore match.unhandled
-        return match ($provider->name) {
+        $success = match ($provider->name) {
             'EasyMoney' => $this->requestEasyMoney(),
             'SuperWalletz' => $this->requestSuperWalletz()
         };
+
+        return response()->json(['success' => $success, 'transaction_id' => $this->transaction->uuid]);
     }
 
-    private function requestEasyMoney(): JsonResponse
+    private function requestEasyMoney(): bool
     {
         $success = $this->send($this->preparePayload());
 
@@ -46,18 +48,16 @@ class Payment extends Controller
 
         $this->transaction->save();
 
-        return response()->json(['success' => $success]);
+        return $success;
     }
 
-    private function requestSuperWalletz(): JsonResponse
+    private function requestSuperWalletz(): bool
     {
         $data = $this->preparePayload();
 
         $data['callback_url'] = route(self::ENDPOINT) . '/' . $this->transaction->uuid;
 
-        $success = $this->send($data);
-
-        return response()->json(['success' => $success]);
+        return $this->send($data);
     }
 
     private function preparePayload(): array
@@ -82,7 +82,7 @@ class Payment extends Controller
 
         $response = Http::post($url, $data);
 
-        $paymentRequest->response = $response->json();
+        $paymentRequest->response = $response->body();
 
         $paymentRequest->save();
 

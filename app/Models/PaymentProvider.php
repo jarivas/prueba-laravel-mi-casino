@@ -23,6 +23,18 @@ class PaymentProvider extends Model
     use HasFactory;
 
     /**
+     * The attributes that are mass assignable.
+     *
+     * @var list<string>
+     */
+    protected $fillable = [
+        'uuid',
+        'name',
+        'url',
+        'status',
+    ];
+
+    /**
      * Get the attributes that should be cast.
      *
      * @return array<string, string>
