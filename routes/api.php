@@ -10,5 +10,4 @@ Route::post('/login', Login::class);
 Route::post('/payment/{provider}', Payment::class)
     ->middleware('auth:sanctum');
 
-    Route::post('/webhook/{transaction}', Webhook::class)
-    ->middleware('auth:sanctum');
+ Route::post('/webhook/{transaction}', Webhook::class)->name('webhook');

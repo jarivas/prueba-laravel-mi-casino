@@ -3,6 +3,7 @@
 namespace Tests;
 
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+use Illuminate\Testing\Fluent\AssertableJson;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Models\User;
 use Illuminate\Support\Carbon;
@@ -51,5 +52,32 @@ abstract class TestCase extends BaseTestCase
             'amount' => $this->faker->numberBetween(1,101),
             'currency' => 'EUR'
         ];
+    }
+
+    protected function provider_no_login(int $id, string $uuid): void
+    {
+        $response = $this->postJson("/api/payment/$uuid", $this->getPayload());
+
+        $response->assertStatus(401)
+            ->assertJson(fn (AssertableJson $json) =>
+                $json->where('message', 'Unauthenticated.'));
+    }
+
+    protected function provider_zero_amount(int $id, string $uuid): void
+    {
+        $user = $this->login();
+        $payload = $this->getPayload();
+
+        $payload['amount'] = 0;
+
+        $response = $this->actingAs($user)
+            ->postJson("/api/payment/$uuid", $payload);
+
+        $response->assertStatus(422)
+            ->assertJson(fn (AssertableJson $json) =>
+                $json
+                    ->where('message', 'The amount field must be at least 1.')
+                    ->etc()
+            );
     }
 }

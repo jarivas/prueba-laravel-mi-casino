@@ -8,6 +8,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Transaction;
 use App\Models\WebhookRequest;
+use Illuminate\Support\Facades\Log;
 
 class Webhook extends Controller
 {
@@ -16,6 +17,11 @@ class Webhook extends Controller
 
     public function __invoke(Request $request, Transaction $transaction): Response
     {
+        Log::debug($transaction->toArray());
+        if ($transaction->status != TransactionStatus::InProgress) {
+            return response()->noContent();
+        }
+
         $this->transaction = $transaction;
         $this->data = $request->all();
 

@@ -55,7 +55,7 @@ class Payment extends Controller
     {
         $data = $this->preparePayload();
 
-        $data['callback_url'] = route(self::ENDPOINT) . '/' . $this->transaction->uuid;
+        $data['callback_url'] = route(self::ENDPOINT, $this->transaction->uuid);
 
         return $this->send($data);
     }

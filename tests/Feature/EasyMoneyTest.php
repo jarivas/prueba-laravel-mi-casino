@@ -18,11 +18,7 @@ class EasyMoneyTest extends TestCase
     {
         [$id, $uuid] = $this->getIds();
 
-        $response = $this->postJson("/api/payment/$uuid", $this->getPayload());
-
-        $response->assertStatus(401)
-            ->assertJson(fn (AssertableJson $json) =>
-                $json->where('message', 'Unauthenticated.'));
+        $this->provider_no_login($id, $uuid);
     }
 
     public function test_easy_wrong_provider(): void
@@ -41,20 +37,7 @@ class EasyMoneyTest extends TestCase
     public function test_easy_zero_amount(): void
     {
         [$id, $uuid] = $this->getIds();
-        $user = $this->login();
-        $payload = $this->getPayload();
-
-        $payload['amount'] = 0;
-
-        $response = $this->actingAs($user)
-            ->postJson("/api/payment/$uuid", $payload);
-
-        $response->assertStatus(422)
-            ->assertJson(fn (AssertableJson $json) =>
-                $json
-                    ->where('message', 'The amount field must be at least 1.')
-                    ->etc()
-            );
+        $this->provider_no_login($id, $uuid);
     }
 
     public function test_easy_ok(): void
