@@ -20,8 +20,12 @@
 				"DEVSENSE.phptools-vscode",
 				"SanderRonde.phpstan-vscode",
 				"wongjn.php-sniffer",
-				"ecodes.vscode-phpmd"
-			]
+				"ecodes.vscode-phpmd",
+				"EditorConfig.EditorConfig"
+			],
+			"settings": {
+				"terminal.integrated.defaultProfile.linux": "bash"
+			}
 		}
 	}
 }

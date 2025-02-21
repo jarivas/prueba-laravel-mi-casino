@@ -2,8 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\PaymentProvider;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -13,11 +12,14 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        PaymentProvider::factory()->create([
+            'name' => 'EasyMoney',
+            'url' => 'http://localhost:3000/process'
+        ]);
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        PaymentProvider::factory()->create([
+            'name' => 'SuperWalletz',
+            'url' => 'http://localhost:3003/pay'
         ]);
     }
 }
