@@ -24,6 +24,7 @@ class WebhookRequest extends Model
     protected $fillable = [
         'request',
         'transaction_id',
+        'deleted_at',
     ];
 
     /**

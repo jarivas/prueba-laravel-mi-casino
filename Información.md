@@ -23,6 +23,21 @@
         "uuid": "e9e04909-bbb7-32d3-a916-108dc2087bd1",
         "url": "http://localhost:3000/process",
         "status": "active",
+        "created_at": "2025-12-31 23:59",
+        "updated_at": "2025-12-31 23:59"
+    }
+]
+
+ ```
+*  Payment: POST JSON **/api/payment/{provider_uuid}**
+```json
+
+ Body {"amount": "1", "currency": "EUR"}
+ Response [
+    {
+        "success": true,
+        "transaction_id": "e9e04909-bbb7-32d3-a916-108dc2087bd1"
     }
 ]
  ```
+*  Webhook: POST JSON **/api/webhook/{transaction_uuid}**

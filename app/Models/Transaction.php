@@ -36,8 +36,9 @@ class Transaction extends Model
      */
     protected $hidden = [
         'id',
+        'deleted_at',
     ];
-    
+
     /**
      * The attributes that are mass assignable.
      *

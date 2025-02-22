@@ -21,7 +21,7 @@ use App\Enum\PaymentProviderStatus;
 class PaymentProvider extends Model
 {
     use HasFactory;
-    
+
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -29,6 +29,7 @@ class PaymentProvider extends Model
      */
     protected $hidden = [
         'id',
+        'deleted_at',
     ];
 
     /**
