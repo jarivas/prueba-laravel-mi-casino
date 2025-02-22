@@ -76,7 +76,7 @@ class SuperWalletzTest extends TestCase
         $this->validateAfterWebhook($transaction);
     }
 
-    private function getIds(): array
+    public static function getIds(): array
     {
         $provider = PaymentProvider::all()[1];
 

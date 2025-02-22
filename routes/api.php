@@ -5,9 +5,10 @@ use App\Http\Controllers\Login;
 use App\Http\Controllers\Payment;
 use App\Http\Controllers\Webhook;
 
-Route::post('/login', Login::class);
+Route::post('/login', Login::class)->name('login');
 
 Route::post('/payment/{provider}', Payment::class)
-    ->middleware('auth:sanctum');
+    ->middleware('auth:sanctum')
+    ->name('payment');
 
  Route::post('/webhook/{transaction}', Webhook::class)->name('webhook');

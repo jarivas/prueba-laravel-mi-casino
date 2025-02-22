@@ -85,7 +85,7 @@ class EasyMoneyTest extends TestCase
         $this->assertSame('ok',$paymentRequest->response);
     }
 
-    private function getIds(): array
+    public static function getIds(): array
     {
         $provider = PaymentProvider::first();
 
