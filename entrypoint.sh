@@ -1,10 +1,10 @@
 composer install
 
-php artisan serve &
+php artisan serve -vvv &
 
 sh setup-githook.sh
 
-if [! -f .git/hooks/pre-commit ]
+if [ ! -f .git/hooks/pre-commit ]
 then
   cp .env.example .env
 fi

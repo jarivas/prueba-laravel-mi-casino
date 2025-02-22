@@ -4,7 +4,6 @@ namespace Tests\Feature;
 
 
 use App\Enum\TransactionStatus;
-use App\Http\Controllers\Webhook;
 use App\Models\WebhookRequest;
 use App\Models\PaymentRequest;
 use App\Models\Transaction;
@@ -31,7 +30,7 @@ class SuperWalletzTest extends TestCase
         $this->provider_no_login($id, $uuid);
     }
 
-    public function test_super_ok()
+    public function test_super_ok_request(): Transaction
     {
         [$id, $uuid] = $this->getIds();
         $user = $this->login();
@@ -47,13 +46,34 @@ class SuperWalletzTest extends TestCase
                     ->has('transaction_id')
                 );
 
-        $transactionUuid = $response->json('transaction_id');
+        return $this->validateAfterRequest($id, $user, $payload, $response->json('transaction_id'));
+    }
 
-        $transaction = $this->validateAfterRequest($id, $user, $payload, $response->json('transaction_id'));
+    public function test_super_ok_webhook(): void
+    {
+        [$id, $uuid] = $this->getIds();
+        $user = $this->login();
+        $payload = $this->getPayload();
 
-        //sleep(10);
+        $transaction = Transaction::factory()->create(
+            array_merge(
+            [
+                'payment_provider_id' => $id,
+                'user_id' => $user,
+            ],
+            $payload)
+        );
 
-        //$this->validateAfterWebhook($transaction);
+        $webhookPayload = [
+            'transaction_id' => 'trx_' . $this->faker->randomNumber(1,100000),
+            'status' => 'success',
+        ];
+
+        $response = $this->postJson('/api/webhook/' . $transaction->uuid, $webhookPayload);
+
+        $response->assertOk();
+
+        $this->validateAfterWebhook($transaction);
     }
 
     private function getIds(): array
@@ -103,7 +123,7 @@ class SuperWalletzTest extends TestCase
 
         $this->assertSame(TransactionStatus::Accepted, $transaction->status);
 
-        $webhook = WebhookRequest::where('transaction_id', $transaction->id);
+        $webhook = WebhookRequest::where('transaction_id', $transaction->id)->first();
 
         $this->assertNotNull($webhook);
 
@@ -114,5 +134,6 @@ class SuperWalletzTest extends TestCase
 
         $this->assertSame($transaction->external_id, $requestData['transaction_id']);
         $this->assertSame('success', $requestData['status']);
+
     }
 }
